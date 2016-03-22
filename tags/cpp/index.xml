@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Cpp on Site about Constroy</title>
+    <link>https://constroy.github.io/tags/cpp/</link>
+    <description>Recent content in Cpp on Site about Constroy</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <copyright>&amp;copy; 2016. All rights reserved.</copyright>
+    <lastBuildDate>Tue, 22 Mar 2016 19:37:43 +0800</lastBuildDate>
+    <atom:link href="https://constroy.github.io/tags/cpp/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>C&#43;&#43;高层抽象之虚函数</title>
+      <link>https://constroy.github.io/post/C&#43;&#43;%E9%AB%98%E5%B1%82%E6%8A%BD%E8%B1%A1%E4%B9%8B%E8%99%9A%E5%87%BD%E6%95%B0/</link>
+      <pubDate>Tue, 22 Mar 2016 19:37:43 +0800</pubDate>
+      
+      <guid>https://constroy.github.io/post/C&#43;&#43;%E9%AB%98%E5%B1%82%E6%8A%BD%E8%B1%A1%E4%B9%8B%E8%99%9A%E5%87%BD%E6%95%B0/</guid>
+      <description>&lt;p&gt;C++中的多态（Polymorphism）有两种，编译时多态和运行时多态。编译时多态包括函数重载（overload）和模板（template）等，而运行时多态主要是虚函数的重写（override）。&lt;/p&gt;
+
+&lt;p&gt;首先区分几个概念：
+&lt;a href=&#34;http://en.cppreference.com/w/cpp/language/overload_resolution&#34;&gt;重载（overload）&lt;/a&gt;： 相同作用范围（或命名空间）的同名函数的不同实现，只能通过参数列表来区分。
+&lt;a href=&#34;http://en.cppreference.com/w/cpp/language/overload_resolution&#34;&gt;重写（override）&lt;/a&gt;： 在子类中重新实现父类中定义的虚函数，以支持动态绑定（dynamic binding）。
+覆盖（overwrite）：在子类中定义中与父类中函数同名的函数，若不构成重写，则父类中的同名函数被隐藏。类似于命名空间的覆盖。&lt;/p&gt;
+
+&lt;p&gt;###虚函数的声明&lt;/p&gt;
+
+&lt;p&gt;在成员函数的声明前加上 &lt;code&gt;virtual&lt;/code&gt; 关键字就成了虚函数。在类外部的函数实现前不要加上 &lt;code&gt;virtual&lt;/code&gt;。静态成员函数（static）不能被声明为虚函数。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;virtual function_declaration ;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;一旦类A的某个函数被声明为虚函数，所有类A的派生类都将包含这个虚函数，且可以对其进行重写。重写时，可以省去 &lt;code&gt;virtual&lt;/code&gt; 关键字（笔者通常会明确写出virtual）。&lt;/p&gt;
+
+&lt;p&gt;一个特殊情况是构造函数，构造函数不能是虚函数。同时也不能在构造函数中调用虚函数，因为对象构造好之前它的调用表是不完整的，此时调用的函数是不确定的。&lt;/p&gt;
+
+&lt;p&gt;c++11引入了两个新关键字 &lt;code&gt;override&lt;/code&gt; 和 &lt;code&gt;final&lt;/code&gt; 。
+&lt;code&gt;override&lt;/code&gt; 明确声明一个函数是重写的，如果这个函数不能被重写，编译器将会报错。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;virtual void scan() override;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;code&gt;final&lt;/code&gt; 明确声明一个函数是不可被重写的，如果在派生类中对其进行重写，编译器将会报错。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;virtual void scan() final;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;code&gt;override&lt;/code&gt; 和 &lt;code&gt;final&lt;/code&gt; 可以一起使用，没有先后顺序。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;virtual void scan() override final;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;###虚函数的使用
+虚函数最通常都是用来实现运行时多态，比如&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;class A {
+public:
+	virtual void fun();
+};
+class B: public A {
+public:
+	virtual void fun() override;
+};
+int main() {
+	A *p=new B;
+	A-&amp;gt;fun();
+	return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;此时调用的是实际类B的fun()函数，而不是定义类A的fun()函数。&lt;/p&gt;
+
+&lt;p&gt;###纯虚函数
+纯虚函数（pure virtual）是一种虚函数，它使得类变成抽象类（abstract class），抽象类不能被实例化。通过重载可以使纯虚函数变为普通虚函数，类变成普通类。也可以将纯虚函数继续重载为纯虚函数。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;	virtual void fun()=0;
+	virtual void fun() override;
+	virtual void fun() override=0;
+	virtual void fun() final;
+	virtual void fun() final=0;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;em&gt;注意第5种声明方式，它将fun()声明为一个纯虚函数，且不能被重载。这个类将永远不能被实例化。&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;纯虚函数声明时不能进行函数体定义，只能将定义放在类外，这是由“初始化式的”语法所限制的。某些编译器扩展支持直接定义。
+纯虚函数可以没有函数体定义，它的功能将由子类重写的函数实现。如果调用没有函数体定义的纯虚函数，将会发生链接错误。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;class A {
+public:
+	int a;
+	virtual void fun()=0;
+};
+class B: public A {
+public:
+	virtual void fun() override {}
+};
+/*
+void A::fun() {
+	printf(&amp;quot;A::fun&amp;quot;);
+}
+*/
+int main()
+{
+	A *p=new B;
+	p-&amp;gt;A::fun();
+	return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;A.cpp:(.text+0x2a): undefined reference to `A::fun()&amp;rsquo;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;###虚析构函数与纯虚析构函数
+如果类A的析构函数是虚函数，则所有类A的派生类的析构函数(包括默认析构函数)都是虚函数，且可以被重写，下面的代码将调用类B的析构函数。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;class A {
+public:
+	virtual ～A();
+};
+class B: public A {
+public:
+	virtual ~B() override;
+};
+int main() {
+	A *p=new B;
+	delete p;
+	return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;纯虚析构函数比较特殊，纯虚析构函数通常不能省略函数体定义，因为子类的析构函数会隐式调用父类的析构函数。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;class A {
+public:
+	int a;
+	virtual ~A()=0;
+};
+class B: public A {};
+int main()
+{
+	A *p=new B;
+	delete p;
+	return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;A.cpp:(.text._ZN1BD2Ev[_ZN1BD5Ev]+0x20): undefined reference to `A::~A()&amp;rsquo;&lt;/p&gt;
+&lt;/blockquote&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

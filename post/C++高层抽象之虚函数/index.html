@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="virtual function in c plus plus">
+  <meta name="generator" content="Hugo 0.15" />
+
+  <title>C&#43;&#43;高层抽象之虚函数 &middot; Site about Constroy</title>
+
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/pure-min.css">
+
+  <!--[if lte IE 8]>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/grids-responsive-old-ie-min.css">
+  <![endif]-->
+  <!--[if gt IE 8]><!-->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/grids-responsive-min.css">
+  <!--<![endif]-->
+
+  <!--[if lte IE 8]>
+  <link rel="stylesheet" href="https://constroy.github.io/css/side-menu-old-ie.css">
+  <![endif]-->
+  <!--[if gt IE 8]><!-->
+  <link rel="stylesheet" href="https://constroy.github.io/css/side-menu.css">
+  <!--<![endif]-->
+
+  <link rel="stylesheet" href="https://constroy.github.io/css/blackburn.css">
+
+  
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+
+  
+  <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet" type="text/css">
+
+  
+  <link rel="alternate" type="application/rss+xml" title="Site about Constroy" href="https://constroy.github.io/index.xml" />
+
+  
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/styles/monokai.min.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  
+
+  <link rel="shortcut icon" href="https://constroy.github.io/img/favicon.ico" type="image/x-icon" />
+
+</head>
+
+
+<body>
+<div id="layout">
+
+  
+<a href="#menu" id="menuLink" class="menu-link">
+  
+  <span></span>
+</a>
+<div id="menu">
+
+  
+  <a class="pure-menu-heading brand" href="https://constroy.github.io/">constroy</a>
+
+
+  <div class="pure-menu">
+    <ul class="pure-menu-list">
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="https://constroy.github.io/"><i class='fa fa-home fa-fw'></i>Home</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="https://constroy.github.io/about/"><i class='fa fa-user fa-fw'></i>About</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="https://constroy.github.io/post/"><i class='fa fa-list fa-fw'></i>Posts</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="https://constroy.github.io/topics/"><i class='fa fa-folder fa-fw'></i>Topics</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="https://constroy.github.io/tags/"><i class='fa fa-tags fa-fw'></i>Tags</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="mailto:constroy.li@gmail.com"><i class='fa fa-envelope fa-fw'></i>Contact</a>
+      
+        </li>
+      
+    </ul>
+  </div>
+
+  <div class="pure-menu social">
+  <ul class="pure-menu-list">
+
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://constroy.github.io/index.xml"><i class="fa fa-rss fa-fw"></i>RSS</a>
+    </li>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://github.com/constroy" target="_blank"><i class="fa fa-github-square fa-fw"></i>GitHub</a>
+    </li>
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://stackoverflow.com/users/5182319/constroy" target="_blank"><i class="fa fa-stack-overflow fa-fw"></i>Stack Overflow</a>
+    </li>
+    
+
+  </ul>
+</div>
+
+
+  <div class="pure-g">
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>&copy; 2016. All rights reserved.</small>
+  </div>
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>Built with&nbsp;<a href="https://gohugo.io/" target="_blank">Hugo</a></small>
+    <small>Theme&nbsp;<a href="https://github.com/yoshiharuyamashita/blackburn" target="_blank">Blackburn</a></small>
+  </div>
+</div>
+
+</div>
+
+
+  <div id="main">
+
+
+<div class="header">
+  <h1>C&#43;&#43;高层抽象之虚函数</h1>
+  <h2>virtual function in c plus plus</h2>
+</div>
+<div class="content">
+
+  <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>22 Mar 2016, 19:37</time>
+  </div>
+
+  
+
+  
+  
+  
+  <div>
+    <i class="fa fa-folder fa-fw"></i>
+    
+      <a class="post-taxonomy-topic" href="https://constroy.github.io/topics/c-plus-plus">c plus plus</a>
+    
+  </div>
+  
+  
+
+  
+  
+  
+  <div>
+    <i class="fa fa-tags fa-fw"></i>
+    
+      <a class="post-taxonomy-tag" href="https://constroy.github.io/tags/cpp">cpp</a>&nbsp;&#47;
+    
+      <a class="post-taxonomy-tag" href="https://constroy.github.io/tags/polymorphism">polymorphism</a>&nbsp;&#47;
+    
+      <a class="post-taxonomy-tag" href="https://constroy.github.io/tags/virtual-function">virtual function</a>&nbsp;&#47;
+    
+      <a class="post-taxonomy-tag" href="https://constroy.github.io/tags/override">override</a>
+    
+  </div>
+  
+  
+
+</div>
+
+  <p>C++中的多态（Polymorphism）有两种，编译时多态和运行时多态。编译时多态包括函数重载（overload）和模板（template）等，而运行时多态主要是虚函数的重写（override）。</p>
+
+<p>首先区分几个概念：
+<a href="http://en.cppreference.com/w/cpp/language/overload_resolution">重载（overload）</a>： 相同作用范围（或命名空间）的同名函数的不同实现，只能通过参数列表来区分。
+<a href="http://en.cppreference.com/w/cpp/language/overload_resolution">重写（override）</a>： 在子类中重新实现父类中定义的虚函数，以支持动态绑定（dynamic binding）。
+覆盖（overwrite）：在子类中定义中与父类中函数同名的函数，若不构成重写，则父类中的同名函数被隐藏。类似于命名空间的覆盖。</p>
+
+<p>###虚函数的声明</p>
+
+<p>在成员函数的声明前加上 <code>virtual</code> 关键字就成了虚函数。在类外部的函数实现前不要加上 <code>virtual</code>。静态成员函数（static）不能被声明为虚函数。</p>
+
+<pre><code class="language-cpp">virtual function_declaration ;
+</code></pre>
+
+<p>一旦类A的某个函数被声明为虚函数，所有类A的派生类都将包含这个虚函数，且可以对其进行重写。重写时，可以省去 <code>virtual</code> 关键字（笔者通常会明确写出virtual）。</p>
+
+<p>一个特殊情况是构造函数，构造函数不能是虚函数。同时也不能在构造函数中调用虚函数，因为对象构造好之前它的调用表是不完整的，此时调用的函数是不确定的。</p>
+
+<p>c++11引入了两个新关键字 <code>override</code> 和 <code>final</code> 。
+<code>override</code> 明确声明一个函数是重写的，如果这个函数不能被重写，编译器将会报错。</p>
+
+<pre><code class="language-cpp">virtual void scan() override;
+</code></pre>
+
+<p><code>final</code> 明确声明一个函数是不可被重写的，如果在派生类中对其进行重写，编译器将会报错。</p>
+
+<pre><code class="language-cpp">virtual void scan() final;
+</code></pre>
+
+<p><code>override</code> 和 <code>final</code> 可以一起使用，没有先后顺序。</p>
+
+<pre><code class="language-cpp">virtual void scan() override final;
+</code></pre>
+
+<p>###虚函数的使用
+虚函数最通常都是用来实现运行时多态，比如</p>
+
+<pre><code class="language-cpp">class A {
+public:
+	virtual void fun();
+};
+class B: public A {
+public:
+	virtual void fun() override;
+};
+int main() {
+	A *p=new B;
+	A-&gt;fun();
+	return 0;
+}
+</code></pre>
+
+<p>此时调用的是实际类B的fun()函数，而不是定义类A的fun()函数。</p>
+
+<p>###纯虚函数
+纯虚函数（pure virtual）是一种虚函数，它使得类变成抽象类（abstract class），抽象类不能被实例化。通过重载可以使纯虚函数变为普通虚函数，类变成普通类。也可以将纯虚函数继续重载为纯虚函数。</p>
+
+<pre><code class="language-cpp">	virtual void fun()=0;
+	virtual void fun() override;
+	virtual void fun() override=0;
+	virtual void fun() final;
+	virtual void fun() final=0;
+</code></pre>
+
+<p><em>注意第5种声明方式，它将fun()声明为一个纯虚函数，且不能被重载。这个类将永远不能被实例化。</em></p>
+
+<p>纯虚函数声明时不能进行函数体定义，只能将定义放在类外，这是由“初始化式的”语法所限制的。某些编译器扩展支持直接定义。
+纯虚函数可以没有函数体定义，它的功能将由子类重写的函数实现。如果调用没有函数体定义的纯虚函数，将会发生链接错误。</p>
+
+<pre><code class="language-cpp">class A {
+public:
+	int a;
+	virtual void fun()=0;
+};
+class B: public A {
+public:
+	virtual void fun() override {}
+};
+/*
+void A::fun() {
+	printf(&quot;A::fun&quot;);
+}
+*/
+int main()
+{
+	A *p=new B;
+	p-&gt;A::fun();
+	return 0;
+}
+</code></pre>
+
+<blockquote>
+<p>A.cpp:(.text+0x2a): undefined reference to `A::fun()&rsquo;</p>
+</blockquote>
+
+<p>###虚析构函数与纯虚析构函数
+如果类A的析构函数是虚函数，则所有类A的派生类的析构函数(包括默认析构函数)都是虚函数，且可以被重写，下面的代码将调用类B的析构函数。</p>
+
+<pre><code class="language-cpp">class A {
+public:
+	virtual ～A();
+};
+class B: public A {
+public:
+	virtual ~B() override;
+};
+int main() {
+	A *p=new B;
+	delete p;
+	return 0;
+}
+</code></pre>
+
+<p>纯虚析构函数比较特殊，纯虚析构函数通常不能省略函数体定义，因为子类的析构函数会隐式调用父类的析构函数。</p>
+
+<pre><code class="language-cpp">class A {
+public:
+	int a;
+	virtual ~A()=0;
+};
+class B: public A {};
+int main()
+{
+	A *p=new B;
+	delete p;
+	return 0;
+}
+</code></pre>
+
+<blockquote>
+<p>A.cpp:(.text._ZN1BD2Ev[_ZN1BD5Ev]+0x20): undefined reference to `A::~A()&rsquo;</p>
+</blockquote>
+
+
+  
+<div class="prev-next-post pure-g">
+  <div class="pure-u-1 pure-u-md-1-2">
+    
+    <nav class="prev">
+      <a href="https://constroy.github.io/post/x86-64%E4%B8%8D%E5%90%8C%E5%B9%B3%E5%8F%B0%E7%9A%84%E8%B0%83%E7%94%A8%E7%BA%A6%E5%AE%9A/"><i class="fa fa-arrow-circle-left fa-fw fa-lg"></i>x86-64不同平台的调用约定</a>
+    </nav>
+    
+  </div>
+  <div class="pure-u-1 pure-u-md-1-2">
+    
+  </div>
+</div>
+
+
+
+  
+
+</div>
+
+</div>
+</div>
+<script src="https://constroy.github.io/js/ui.js"></script>
+
+
+
+
+</body>
+</html>
+

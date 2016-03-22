@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Site about Constroy</title>
+    <link>https://constroy.github.io/</link>
+    <description>Recent content on Site about Constroy</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <copyright>&amp;copy; 2016. All rights reserved.</copyright>
+    <lastBuildDate>Wed, 23 Mar 2016 00:14:45 +0800</lastBuildDate>
+    <atom:link href="https://constroy.github.io/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>about</title>
+      <link>https://constroy.github.io/about/</link>
+      <pubDate>Wed, 23 Mar 2016 00:14:45 +0800</pubDate>
+      
+      <guid>https://constroy.github.io/about/</guid>
+      <description>&lt;p&gt;Hi, I am constroy.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>C&#43;&#43;高层抽象之虚函数</title>
+      <link>https://constroy.github.io/post/C&#43;&#43;%E9%AB%98%E5%B1%82%E6%8A%BD%E8%B1%A1%E4%B9%8B%E8%99%9A%E5%87%BD%E6%95%B0/</link>
+      <pubDate>Tue, 22 Mar 2016 19:37:43 +0800</pubDate>
+      
+      <guid>https://constroy.github.io/post/C&#43;&#43;%E9%AB%98%E5%B1%82%E6%8A%BD%E8%B1%A1%E4%B9%8B%E8%99%9A%E5%87%BD%E6%95%B0/</guid>
+      <description>&lt;p&gt;C++中的多态（Polymorphism）有两种，编译时多态和运行时多态。编译时多态包括函数重载（overload）和模板（template）等，而运行时多态主要是虚函数的重写（override）。&lt;/p&gt;
+
+&lt;p&gt;首先区分几个概念：
+&lt;a href=&#34;http://en.cppreference.com/w/cpp/language/overload_resolution&#34;&gt;重载（overload）&lt;/a&gt;： 相同作用范围（或命名空间）的同名函数的不同实现，只能通过参数列表来区分。
+&lt;a href=&#34;http://en.cppreference.com/w/cpp/language/overload_resolution&#34;&gt;重写（override）&lt;/a&gt;： 在子类中重新实现父类中定义的虚函数，以支持动态绑定（dynamic binding）。
+覆盖（overwrite）：在子类中定义中与父类中函数同名的函数，若不构成重写，则父类中的同名函数被隐藏。类似于命名空间的覆盖。&lt;/p&gt;
+
+&lt;p&gt;###虚函数的声明&lt;/p&gt;
+
+&lt;p&gt;在成员函数的声明前加上 &lt;code&gt;virtual&lt;/code&gt; 关键字就成了虚函数。在类外部的函数实现前不要加上 &lt;code&gt;virtual&lt;/code&gt;。静态成员函数（static）不能被声明为虚函数。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;virtual function_declaration ;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;一旦类A的某个函数被声明为虚函数，所有类A的派生类都将包含这个虚函数，且可以对其进行重写。重写时，可以省去 &lt;code&gt;virtual&lt;/code&gt; 关键字（笔者通常会明确写出virtual）。&lt;/p&gt;
+
+&lt;p&gt;一个特殊情况是构造函数，构造函数不能是虚函数。同时也不能在构造函数中调用虚函数，因为对象构造好之前它的调用表是不完整的，此时调用的函数是不确定的。&lt;/p&gt;
+
+&lt;p&gt;c++11引入了两个新关键字 &lt;code&gt;override&lt;/code&gt; 和 &lt;code&gt;final&lt;/code&gt; 。
+&lt;code&gt;override&lt;/code&gt; 明确声明一个函数是重写的，如果这个函数不能被重写，编译器将会报错。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;virtual void scan() override;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;code&gt;final&lt;/code&gt; 明确声明一个函数是不可被重写的，如果在派生类中对其进行重写，编译器将会报错。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;virtual void scan() final;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;code&gt;override&lt;/code&gt; 和 &lt;code&gt;final&lt;/code&gt; 可以一起使用，没有先后顺序。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;virtual void scan() override final;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;###虚函数的使用
+虚函数最通常都是用来实现运行时多态，比如&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;class A {
+public:
+	virtual void fun();
+};
+class B: public A {
+public:
+	virtual void fun() override;
+};
+int main() {
+	A *p=new B;
+	A-&amp;gt;fun();
+	return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;此时调用的是实际类B的fun()函数，而不是定义类A的fun()函数。&lt;/p&gt;
+
+&lt;p&gt;###纯虚函数
+纯虚函数（pure virtual）是一种虚函数，它使得类变成抽象类（abstract class），抽象类不能被实例化。通过重载可以使纯虚函数变为普通虚函数，类变成普通类。也可以将纯虚函数继续重载为纯虚函数。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;	virtual void fun()=0;
+	virtual void fun() override;
+	virtual void fun() override=0;
+	virtual void fun() final;
+	virtual void fun() final=0;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;em&gt;注意第5种声明方式，它将fun()声明为一个纯虚函数，且不能被重载。这个类将永远不能被实例化。&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;纯虚函数声明时不能进行函数体定义，只能将定义放在类外，这是由“初始化式的”语法所限制的。某些编译器扩展支持直接定义。
+纯虚函数可以没有函数体定义，它的功能将由子类重写的函数实现。如果调用没有函数体定义的纯虚函数，将会发生链接错误。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;class A {
+public:
+	int a;
+	virtual void fun()=0;
+};
+class B: public A {
+public:
+	virtual void fun() override {}
+};
+/*
+void A::fun() {
+	printf(&amp;quot;A::fun&amp;quot;);
+}
+*/
+int main()
+{
+	A *p=new B;
+	p-&amp;gt;A::fun();
+	return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;A.cpp:(.text+0x2a): undefined reference to `A::fun()&amp;rsquo;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;###虚析构函数与纯虚析构函数
+如果类A的析构函数是虚函数，则所有类A的派生类的析构函数(包括默认析构函数)都是虚函数，且可以被重写，下面的代码将调用类B的析构函数。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;class A {
+public:
+	virtual ～A();
+};
+class B: public A {
+public:
+	virtual ~B() override;
+};
+int main() {
+	A *p=new B;
+	delete p;
+	return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;纯虚析构函数比较特殊，纯虚析构函数通常不能省略函数体定义，因为子类的析构函数会隐式调用父类的析构函数。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;class A {
+public:
+	int a;
+	virtual ~A()=0;
+};
+class B: public A {};
+int main()
+{
+	A *p=new B;
+	delete p;
+	return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;A.cpp:(.text._ZN1BD2Ev[_ZN1BD5Ev]+0x20): undefined reference to `A::~A()&amp;rsquo;&lt;/p&gt;
+&lt;/blockquote&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>x86-64不同平台的调用约定</title>
+      <link>https://constroy.github.io/post/x86-64%E4%B8%8D%E5%90%8C%E5%B9%B3%E5%8F%B0%E7%9A%84%E8%B0%83%E7%94%A8%E7%BA%A6%E5%AE%9A/</link>
+      <pubDate>Thu, 31 Dec 2015 13:18:38 +0800</pubDate>
+      
+      <guid>https://constroy.github.io/post/x86-64%E4%B8%8D%E5%90%8C%E5%B9%B3%E5%8F%B0%E7%9A%84%E8%B0%83%E7%94%A8%E7%BA%A6%E5%AE%9A/</guid>
+      <description>&lt;p&gt;x64的ABI在Unix（Linux，Mac OS）上和Windows上是不同的，调用约定有区别。&lt;/p&gt;
+
+&lt;p&gt;wikipedia上对&lt;a href=&#34;https://en.wikipedia.org/wiki/X86_calling_conventions&#34;&gt;调用约定&lt;/a&gt;的解释&lt;/p&gt;
+
+&lt;p&gt;调用约定的不同（寄存器传参部分）&lt;/p&gt;
+
+&lt;p&gt;Unix：
+The first six integer arguments (from the left) are passed in RDI, RSI, RDX, RCX, R8, and R9, in that order.
+Additional integer arguments are passed on the stack. These registers, plus RAX, R10 and R11 are destroyed
+by function calls, and thus are available for use by the function without saving.&lt;/p&gt;
+
+&lt;p&gt;Windows：
+The first four integer arguments are passed in RCX, RDX, R8 and R9, in that order. Additional integer
+arguments are passed on the stack. These registers, plus RAX, R10 and R11 are destroyed by function calls,
+and thus are available for use by the function without saving.&lt;/p&gt;
+
+&lt;p&gt;需要注意的是，Windows上用register传参的同时，还需要需要分配栈空间，并且需要16字节对齐。
+&lt;a href=&#34;https://msdn.microsoft.com/en-us/library/ms235286.aspx&#34;&gt;The x64 Application Binary Interface (ABI) is a 4 register fast-call calling convention, with stack-backing for those registers.&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;代码示例&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;		 ----------------------------------------------------------------------
+        ; Allocate stack memory
+        ; ---------------------------------------------------------------------
+        sub rsp,8*7
+        ; Allocated 8*7 bytes:
+        ; 8*4 from them are defaut parameters for all functions.
+        ; 8*3 from them are those extra three parameters on stack.
+        ; Total allocated space for seven parameters.
+        ; 4x Default parameters are passed via registers.
+        ; Those 3x extra parameters are passed via stack.
+        ; !!! Always allocate stack space =&amp;gt; odd number * 8, 
+        ; like now is just like we need =&amp;gt; 8*7, doing like this will
+        ; balance stack and make it aligned on 16 byte boundary.
+        
+        ; ---------------------------------------------------------------------
+        ; Call printf with seven parameters
+        ; 4x of them are assigned to registers.
+        ; 3x of them are assigned to stack spaces.
+        ; ---------------------------------------------------------------------
+		; #3x# ; Stack parameters
+        
+        mov rax,qword [param6]
+        mov qword [rsp+48],rax
+        mov rax,qword [param5]
+        mov qword [rsp+40],rax
+        mov rax,qword [param4]
+        mov qword [rsp+32],rax
+        ; ---------------------------
+        ; #4x# ; Register parameters
+        mov r9,qword [param3]
+        mov r8,qword [param2]
+        mov rdx,qword [param1]
+        mov rcx,qword txt_format
+        ; ---------------------------
+        call printf
+        ; ---------------------------
+		
+        ; ---------------------------------------------------------------------
+        ; Release stack memory
+        ; ---------------------------------------------------------------------
+        add rsp,8*7
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>用Hadoop进行分布式计算</title>
+      <link>https://constroy.github.io/post/%E7%94%A8Hadoop%E8%BF%9B%E8%A1%8C%E5%88%86%E5%B8%83%E5%BC%8F%E8%AE%A1%E7%AE%97/</link>
+      <pubDate>Thu, 19 Nov 2015 10:57:10 +0800</pubDate>
+      
+      <guid>https://constroy.github.io/post/%E7%94%A8Hadoop%E8%BF%9B%E8%A1%8C%E5%88%86%E5%B8%83%E5%BC%8F%E8%AE%A1%E7%AE%97/</guid>
+      <description>&lt;p&gt;这学期选了《大数据科学导论》这门课，上课没怎么听。最后为了完成大作业，自己了解了些Hadoop的知识，觉得挺有意思。&lt;/p&gt;
+
+&lt;p&gt;Hadoop是一个著名的分布式计算框架，主体由Java实现，包括一个分布式文件系统HDFS和一个MapReduce计算模型。MapReduce在大数据领域是一个经典且通用的计算模型，许多领域的许多问题都能用它来解决，比如最经典的对海量文本的单词统计。&lt;/p&gt;
+
+&lt;p&gt;Hadoop的部署相对简单（我是在单机上安装），Arch Linux的AUR里有人打了包，直接安装即可。相关配置可以参考&lt;a href=&#34;http://hadoop.apache.org/docs/r1.0.4/cn/quickstart.html&#34;&gt;Hadoop快速入门&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;部署完成后，就可以编写程序进行计算，Hadoop的local语言是Java，但也可以使用C++、Shell、Python、 Ruby、PHP、Perl等语言来编写Mapper和Reducer，这就为开发者提供了更多选择。Hadoop为使用其它语言的开发者提供了一个streaming工具包（hadoop-streaming-.jar），用其他语言编写Mapper和Reducer时，可以直接使用Unix标准输入输出作为数据接口。详细参见&lt;a href=&#34;http://shiyanjun.cn/archives/336.html&#34;&gt;Hadoop Streaming原理及实践&lt;/a&gt;。为了快速完成作业，我选择了Python来进行开发。&lt;/p&gt;
+
+&lt;p&gt;MapReduce的过程主要分为Map-Shuffle-Reduce三个步骤（下面引自Wikipedia）：&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;&amp;ldquo;Map&amp;rdquo; step:&lt;/strong&gt; Each worker node applies the &amp;ldquo;map()&amp;rdquo; function to the local data, and writes the output to a temporary storage. A master node orchestrates that for redundant copies of input data, only one is processed.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&amp;ldquo;Shuffle&amp;rdquo; step:&lt;/strong&gt; Worker nodes redistribute data based on the output keys (produced by the &amp;ldquo;map()&amp;rdquo; function), such that all data belonging to one key is located on the same worker node.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&amp;ldquo;Reduce&amp;rdquo; step:&lt;/strong&gt; Worker nodes now process each group of output data, per key, in parallel.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;开发者通常需要编写Mapper和Reducer模块，Shuffle操作由Hadoop完成。Mapper接收输入的数据（通常为&lt;code&gt;&amp;lt;key, value&amp;gt;&lt;/code&gt;键值对，也可以是其他形式），处理之后生成中间结果（&lt;code&gt;&amp;lt;key, value&amp;gt;&lt;/code&gt;键值对，在标准输出里以tab分隔），Hadoop对中间结果进行sort（可能还有combine过程），然后送到各个Reducer，这里保证相同key的键值对被送到同一个Reducer。接下来Reducer对送来的键值对进行处理，最后输出结果。&lt;/p&gt;
+
+&lt;p&gt;下面来看一个例题。有许多文本文件，提取出其中的每个单词并生成倒排索引（inverted index）。
+跟word count差不多的思路，Mapper扫描对应的文件提取出单词，生成&lt;code&gt;&amp;lt;word, doc&amp;gt;&lt;/code&gt;键值对，然后Reducer合并键值对，对每一个word生成一个到排索引。代码如下：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;import sys
+import json
+ 
+# input comes from STDIN (standard input)
+for line in sys.stdin:
+    # remove leading and trailing whitespace
+	line = line.strip()
+
+	# parse the line with json method
+	record = json.loads(line)
+	key = record[0];
+	value = record[1];
+
+    # split the line into words
+	words = value.split()
+
+	for word in words:
+        # write the results to STDOUT (standard output);
+        # what we output here will be the input for the
+        # Reduce step, i.e. the input for reducer.py
+        #
+        # tab-delimited;
+		print(&#39;%s\t%s&#39; % (word, key))
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;import sys
+
+# maps words to their documents
+word2set = {}
+
+# input comes from STDIN
+for line in sys.stdin:
+	# remove leading and trailing whitespace
+	line = line.strip()
+
+	# parse the input we got from mapper.py
+	word, doc = line.split(&#39;\t&#39;, 1)
+
+	word2set.setdefault(word,set()).add(doc)
+
+# write the results to STDOUT (standard output)
+for word in word2set:
+	print(&#39;%-16s%s&#39; % (word, word2set[word]))
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;MapReduce的本质是一种分治思想，将巨大规模的数据划分为若干块，各个块可以并行处理，通过Map生成若干键值对，Sort &amp;amp; Combine得到关于键的若干等价类，类与类之间没有关联，Reduce对每个类分别进行处理，每个类得到一个独立的结果，最后将每个类的结果合并成为最终结果。许多简单的问题，将它放到MapReduce模型里却充满挑战，而一旦将其成功套入模型，就能借助并行计算的力量解决数据规模巨大的难题。&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

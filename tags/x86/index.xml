@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>X86 on Site about Constroy</title>
+    <link>https://constroy.github.io/tags/x86/</link>
+    <description>Recent content in X86 on Site about Constroy</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <copyright>&amp;copy; 2016. All rights reserved.</copyright>
+    <lastBuildDate>Thu, 31 Dec 2015 13:18:38 +0800</lastBuildDate>
+    <atom:link href="https://constroy.github.io/tags/x86/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>x86-64不同平台的调用约定</title>
+      <link>https://constroy.github.io/post/x86-64%E4%B8%8D%E5%90%8C%E5%B9%B3%E5%8F%B0%E7%9A%84%E8%B0%83%E7%94%A8%E7%BA%A6%E5%AE%9A/</link>
+      <pubDate>Thu, 31 Dec 2015 13:18:38 +0800</pubDate>
+      
+      <guid>https://constroy.github.io/post/x86-64%E4%B8%8D%E5%90%8C%E5%B9%B3%E5%8F%B0%E7%9A%84%E8%B0%83%E7%94%A8%E7%BA%A6%E5%AE%9A/</guid>
+      <description>&lt;p&gt;x64的ABI在Unix（Linux，Mac OS）上和Windows上是不同的，调用约定有区别。&lt;/p&gt;
+
+&lt;p&gt;wikipedia上对&lt;a href=&#34;https://en.wikipedia.org/wiki/X86_calling_conventions&#34;&gt;调用约定&lt;/a&gt;的解释&lt;/p&gt;
+
+&lt;p&gt;调用约定的不同（寄存器传参部分）&lt;/p&gt;
+
+&lt;p&gt;Unix：
+The first six integer arguments (from the left) are passed in RDI, RSI, RDX, RCX, R8, and R9, in that order.
+Additional integer arguments are passed on the stack. These registers, plus RAX, R10 and R11 are destroyed
+by function calls, and thus are available for use by the function without saving.&lt;/p&gt;
+
+&lt;p&gt;Windows：
+The first four integer arguments are passed in RCX, RDX, R8 and R9, in that order. Additional integer
+arguments are passed on the stack. These registers, plus RAX, R10 and R11 are destroyed by function calls,
+and thus are available for use by the function without saving.&lt;/p&gt;
+
+&lt;p&gt;需要注意的是，Windows上用register传参的同时，还需要需要分配栈空间，并且需要16字节对齐。
+&lt;a href=&#34;https://msdn.microsoft.com/en-us/library/ms235286.aspx&#34;&gt;The x64 Application Binary Interface (ABI) is a 4 register fast-call calling convention, with stack-backing for those registers.&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;代码示例&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;		 ----------------------------------------------------------------------
+        ; Allocate stack memory
+        ; ---------------------------------------------------------------------
+        sub rsp,8*7
+        ; Allocated 8*7 bytes:
+        ; 8*4 from them are defaut parameters for all functions.
+        ; 8*3 from them are those extra three parameters on stack.
+        ; Total allocated space for seven parameters.
+        ; 4x Default parameters are passed via registers.
+        ; Those 3x extra parameters are passed via stack.
+        ; !!! Always allocate stack space =&amp;gt; odd number * 8, 
+        ; like now is just like we need =&amp;gt; 8*7, doing like this will
+        ; balance stack and make it aligned on 16 byte boundary.
+        
+        ; ---------------------------------------------------------------------
+        ; Call printf with seven parameters
+        ; 4x of them are assigned to registers.
+        ; 3x of them are assigned to stack spaces.
+        ; ---------------------------------------------------------------------
+		; #3x# ; Stack parameters
+        
+        mov rax,qword [param6]
+        mov qword [rsp+48],rax
+        mov rax,qword [param5]
+        mov qword [rsp+40],rax
+        mov rax,qword [param4]
+        mov qword [rsp+32],rax
+        ; ---------------------------
+        ; #4x# ; Register parameters
+        mov r9,qword [param3]
+        mov r8,qword [param2]
+        mov rdx,qword [param1]
+        mov rcx,qword txt_format
+        ; ---------------------------
+        call printf
+        ; ---------------------------
+		
+        ; ---------------------------------------------------------------------
+        ; Release stack memory
+        ; ---------------------------------------------------------------------
+        add rsp,8*7
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

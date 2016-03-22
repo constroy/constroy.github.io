@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Big Data on Site about Constroy</title>
+    <link>https://constroy.github.io/tags/big-data/</link>
+    <description>Recent content in Big Data on Site about Constroy</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <copyright>&amp;copy; 2016. All rights reserved.</copyright>
+    <lastBuildDate>Thu, 19 Nov 2015 10:57:10 +0800</lastBuildDate>
+    <atom:link href="https://constroy.github.io/tags/big-data/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>用Hadoop进行分布式计算</title>
+      <link>https://constroy.github.io/post/%E7%94%A8Hadoop%E8%BF%9B%E8%A1%8C%E5%88%86%E5%B8%83%E5%BC%8F%E8%AE%A1%E7%AE%97/</link>
+      <pubDate>Thu, 19 Nov 2015 10:57:10 +0800</pubDate>
+      
+      <guid>https://constroy.github.io/post/%E7%94%A8Hadoop%E8%BF%9B%E8%A1%8C%E5%88%86%E5%B8%83%E5%BC%8F%E8%AE%A1%E7%AE%97/</guid>
+      <description>&lt;p&gt;这学期选了《大数据科学导论》这门课，上课没怎么听。最后为了完成大作业，自己了解了些Hadoop的知识，觉得挺有意思。&lt;/p&gt;
+
+&lt;p&gt;Hadoop是一个著名的分布式计算框架，主体由Java实现，包括一个分布式文件系统HDFS和一个MapReduce计算模型。MapReduce在大数据领域是一个经典且通用的计算模型，许多领域的许多问题都能用它来解决，比如最经典的对海量文本的单词统计。&lt;/p&gt;
+
+&lt;p&gt;Hadoop的部署相对简单（我是在单机上安装），Arch Linux的AUR里有人打了包，直接安装即可。相关配置可以参考&lt;a href=&#34;http://hadoop.apache.org/docs/r1.0.4/cn/quickstart.html&#34;&gt;Hadoop快速入门&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;部署完成后，就可以编写程序进行计算，Hadoop的local语言是Java，但也可以使用C++、Shell、Python、 Ruby、PHP、Perl等语言来编写Mapper和Reducer，这就为开发者提供了更多选择。Hadoop为使用其它语言的开发者提供了一个streaming工具包（hadoop-streaming-.jar），用其他语言编写Mapper和Reducer时，可以直接使用Unix标准输入输出作为数据接口。详细参见&lt;a href=&#34;http://shiyanjun.cn/archives/336.html&#34;&gt;Hadoop Streaming原理及实践&lt;/a&gt;。为了快速完成作业，我选择了Python来进行开发。&lt;/p&gt;
+
+&lt;p&gt;MapReduce的过程主要分为Map-Shuffle-Reduce三个步骤（下面引自Wikipedia）：&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;&amp;ldquo;Map&amp;rdquo; step:&lt;/strong&gt; Each worker node applies the &amp;ldquo;map()&amp;rdquo; function to the local data, and writes the output to a temporary storage. A master node orchestrates that for redundant copies of input data, only one is processed.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&amp;ldquo;Shuffle&amp;rdquo; step:&lt;/strong&gt; Worker nodes redistribute data based on the output keys (produced by the &amp;ldquo;map()&amp;rdquo; function), such that all data belonging to one key is located on the same worker node.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&amp;ldquo;Reduce&amp;rdquo; step:&lt;/strong&gt; Worker nodes now process each group of output data, per key, in parallel.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;开发者通常需要编写Mapper和Reducer模块，Shuffle操作由Hadoop完成。Mapper接收输入的数据（通常为&lt;code&gt;&amp;lt;key, value&amp;gt;&lt;/code&gt;键值对，也可以是其他形式），处理之后生成中间结果（&lt;code&gt;&amp;lt;key, value&amp;gt;&lt;/code&gt;键值对，在标准输出里以tab分隔），Hadoop对中间结果进行sort（可能还有combine过程），然后送到各个Reducer，这里保证相同key的键值对被送到同一个Reducer。接下来Reducer对送来的键值对进行处理，最后输出结果。&lt;/p&gt;
+
+&lt;p&gt;下面来看一个例题。有许多文本文件，提取出其中的每个单词并生成倒排索引（inverted index）。
+跟word count差不多的思路，Mapper扫描对应的文件提取出单词，生成&lt;code&gt;&amp;lt;word, doc&amp;gt;&lt;/code&gt;键值对，然后Reducer合并键值对，对每一个word生成一个到排索引。代码如下：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;import sys
+import json
+ 
+# input comes from STDIN (standard input)
+for line in sys.stdin:
+    # remove leading and trailing whitespace
+	line = line.strip()
+
+	# parse the line with json method
+	record = json.loads(line)
+	key = record[0];
+	value = record[1];
+
+    # split the line into words
+	words = value.split()
+
+	for word in words:
+        # write the results to STDOUT (standard output);
+        # what we output here will be the input for the
+        # Reduce step, i.e. the input for reducer.py
+        #
+        # tab-delimited;
+		print(&#39;%s\t%s&#39; % (word, key))
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;import sys
+
+# maps words to their documents
+word2set = {}
+
+# input comes from STDIN
+for line in sys.stdin:
+	# remove leading and trailing whitespace
+	line = line.strip()
+
+	# parse the input we got from mapper.py
+	word, doc = line.split(&#39;\t&#39;, 1)
+
+	word2set.setdefault(word,set()).add(doc)
+
+# write the results to STDOUT (standard output)
+for word in word2set:
+	print(&#39;%-16s%s&#39; % (word, word2set[word]))
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;MapReduce的本质是一种分治思想，将巨大规模的数据划分为若干块，各个块可以并行处理，通过Map生成若干键值对，Sort &amp;amp; Combine得到关于键的若干等价类，类与类之间没有关联，Reduce对每个类分别进行处理，每个类得到一个独立的结果，最后将每个类的结果合并成为最终结果。许多简单的问题，将它放到MapReduce模型里却充满挑战，而一旦将其成功套入模型，就能借助并行计算的力量解决数据规模巨大的难题。&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>
