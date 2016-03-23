@@ -252,9 +252,9 @@ and thus are available for use by the function without saving.</p>
 
 <p>代码示例</p>
 
-<pre><code>		 ----------------------------------------------------------------------
+<pre><code>		 ------------------------------------------------------
         ; Allocate stack memory
-        ; ---------------------------------------------------------------------
+        ; -------------------------------------------------------------
         sub rsp,8*7
         ; Allocated 8*7 bytes:
         ; 8*4 from them are defaut parameters for all functions.
@@ -266,11 +266,11 @@ and thus are available for use by the function without saving.</p>
         ; like now is just like we need =&gt; 8*7, doing like this will
         ; balance stack and make it aligned on 16 byte boundary.
         
-        ; ---------------------------------------------------------------------
+        ; -------------------------------------------------------------
         ; Call printf with seven parameters
         ; 4x of them are assigned to registers.
         ; 3x of them are assigned to stack spaces.
-        ; ---------------------------------------------------------------------
+        ; -------------------------------------------------------------
 		; #3x# ; Stack parameters
         
         mov rax,qword [param6]
@@ -289,9 +289,9 @@ and thus are available for use by the function without saving.</p>
         call printf
         ; ---------------------------
 		
-        ; ---------------------------------------------------------------------
+        ; -------------------------------------------------------------
         ; Release stack memory
-        ; ---------------------------------------------------------------------
+        ; -------------------------------------------------------------
         add rsp,8*7
 </code></pre>
 
