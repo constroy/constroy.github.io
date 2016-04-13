@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="generator" content="Hugo 0.15" />
+
+  <title>MPI点到点通信实验报告 &middot; See the Word Abstractly</title>
+
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/pure-min.css">
+
+  <!--[if lte IE 8]>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/grids-responsive-old-ie-min.css">
+  <![endif]-->
+  <!--[if gt IE 8]><!-->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/grids-responsive-min.css">
+  <!--<![endif]-->
+
+  <!--[if lte IE 8]>
+  <link rel="stylesheet" href="https://constroy.github.io/css/side-menu-old-ie.css">
+  <![endif]-->
+  <!--[if gt IE 8]><!-->
+  <link rel="stylesheet" href="https://constroy.github.io/css/side-menu.css">
+  <!--<![endif]-->
+
+  <link rel="stylesheet" href="https://constroy.github.io/css/blackburn.css">
+
+  
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+
+  
+  <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet" type="text/css">
+
+  
+  <link rel="alternate" type="application/rss+xml" title="See the Word Abstractly" href="https://constroy.github.io/index.xml" />
+
+  
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/styles/monokai.min.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  
+
+  <link rel="shortcut icon" href="https://constroy.github.io/img/favicon.ico" type="image/x-icon" />
+
+</head>
+
+
+<body>
+<div id="layout">
+
+  
+<a href="#menu" id="menuLink" class="menu-link">
+  
+  <span></span>
+</a>
+<div id="menu">
+
+  
+  <a class="pure-menu-heading brand" href="https://constroy.github.io/">constroy</a>
+
+
+  <div class="pure-menu">
+    <ul class="pure-menu-list">
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="https://constroy.github.io/"><i class='fa fa-home fa-fw'></i>Home</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="https://constroy.github.io/about/"><i class='fa fa-user fa-fw'></i>About</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="https://constroy.github.io/post/"><i class='fa fa-list fa-fw'></i>Posts</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="https://constroy.github.io/topics/"><i class='fa fa-folder fa-fw'></i>Topics</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="https://constroy.github.io/tags/"><i class='fa fa-tags fa-fw'></i>Tags</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="mailto:constroy.li@gmail.com"><i class='fa fa-envelope fa-fw'></i>Contact</a>
+      
+        </li>
+      
+    </ul>
+  </div>
+
+  <div class="pure-menu social">
+  <ul class="pure-menu-list">
+
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://constroy.github.io/index.xml"><i class="fa fa-rss fa-fw"></i>RSS</a>
+    </li>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://github.com/constroy" target="_blank"><i class="fa fa-github-square fa-fw"></i>GitHub</a>
+    </li>
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://stackoverflow.com/users/5182319/constroy" target="_blank"><i class="fa fa-stack-overflow fa-fw"></i>Stack Overflow</a>
+    </li>
+    
+
+  </ul>
+</div>
+
+
+  <div class="pure-g">
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>&copy; 2016. All rights reserved.</small>
+  </div>
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>Built with&nbsp;<a href="https://gohugo.io/" target="_blank">Hugo</a></small>
+    <small>Theme&nbsp;<a href="https://github.com/yoshiharuyamashita/blackburn" target="_blank">Blackburn</a></small>
+  </div>
+</div>
+
+</div>
+
+
+  <div id="main">
+
+
+<div class="header">
+  <h1>MPI点到点通信实验报告</h1>
+  <h2></h2>
+</div>
+<div class="content">
+
+  <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>13 Apr 2016, 22:21</time>
+  </div>
+
+  
+
+  
+  
+  
+  
+
+  
+  
+  
+  
+
+</div>
+
+  
+
+<h3 id="实验要求:abe259840b9d7da5db93f06163af60d6">实验要求</h3>
+
+<p>使用MPI的点对点通信，将数据从进程0传出，以环型方式（Ring），依次传输给所有的进程（最后传到进程0），也可以说，以接力的方式广播数据，计算数据传输一圈的时间。同时计算每个节点上传输一圈的时间。</p>
+
+<h3 id="设计方法:abe259840b9d7da5db93f06163af60d6">设计方法</h3>
+
+<p>从0号进程开始，将当前时间作为数据传给下一个进程。每个进程收到上个进程发来的时间戳，用当前时间减之，得到这次传输的时间。再把当前发给下一个进程。直到0号进程收到N - 1号进程的数据，完成一圈。0号进程用当前减开始时间，得到一圈的总用时（包含每个进程自己占用的时间）。</p>
+
+<p>重复R次，用总时间除以R，得出平均时间。R可由程序参数指定（通过mpirun传递参数）。</p>
+
+<p>主要使用的函数：</p>
+
+<pre><code>MPI_Comm_rank()     // 获取本进程ID
+MPI_Comm_size()     // 获取总进程数
+MPI_Wtime()         // 获取从某时刻开始经过的时间
+MPI_Send()          // 阻塞地发出数据
+MPI_Recv()          // 阻塞地接收数据
+MPI_Barrier()       // 阻塞直到每一个进程都到达这个函数调用
+</code></pre>
+
+<h3 id="实现代码:abe259840b9d7da5db93f06163af60d6">实现代码</h3>
+
+<pre><code class="language-cpp">#include &lt;stdlib.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;mpi.h&gt;
+
+int main(int argc, char *argv[]) {
+	int i, round, myid, numprocs;
+	double begin, now, then, total = .0, sum = .0;
+	MPI_Status status;
+
+	/* just one arg, the number of rounds is needed */
+	if (argc != 2) {
+		puts(&quot;too many/few args&quot;);
+		return 0;
+	}
+
+	/* get the number of rounds from argv */
+	round = atoi(argv[1]);
+
+	MPI_Init(&amp;argc, &amp;argv);
+	MPI_Comm_rank(MPI_COMM_WORLD, &amp;myid);
+	MPI_Comm_size(MPI_COMM_WORLD, &amp;numprocs);
+
+	if (myid == 0) {
+		for (i = 0; i &lt; round; ++i) {
+			/* take down the begin time */
+			begin = now = MPI_Wtime();
+
+			/* send the current time to next process */
+			MPI_Send(&amp;now, 1, MPI_DOUBLE, 1, i, MPI_COMM_WORLD);
+
+			/* receive time stamp from previous process */
+			MPI_Recv(&amp;then, 1, MPI_DOUBLE, numprocs - 1, i, MPI_COMM_WORLD, &amp;status);
+			now = MPI_Wtime();
+
+			/* accumulate the total time to this process */
+			total += now - then;
+
+			/* accumulate the time in all rounds */
+			sum += now - begin;
+		}
+
+		/* print the time used from N - 1 to 0 */
+		printf(&quot;time used on %2d to %2d: %.6fs / %d rounds\n&quot;, numprocs - 1, myid, total, round);
+	} else {
+		for (i = 0; i &lt; round; ++i) {
+			/* receive time stamp from previous process */
+			MPI_Recv(&amp;then, 1, MPI_DOUBLE, myid - 1, i, MPI_COMM_WORLD, &amp;status);
+			/* accumulate the total time to this process */
+			total += MPI_Wtime() - then;
+
+			/* send the current time to next process */
+			now = MPI_Wtime();
+			MPI_Send(&amp;now, 1, MPI_DOUBLE, (myid + 1) % numprocs, i, MPI_COMM_WORLD);
+		}
+		/* print the time used from id - 1 to id */
+		printf(&quot;time used on %2d to %2d: %.6fs / %d rounds\n&quot;, myid - 1, myid, total, round);
+	}
+
+	/* wait for processes to complete calculating */
+	MPI_Barrier(MPI_COMM_WORLD);
+
+	/* print the total time used in a round */
+	if (myid == 0)
+		printf(&quot;total time used in a round: %.6fs / %d rounds\n&quot;, sum, round);
+
+	MPI_Finalize();
+	return 0;
+}
+</code></pre>
+
+<h3 id="运行结果:abe259840b9d7da5db93f06163af60d6">运行结果</h3>
+
+<pre><code>$ cat ring.qsub.o105
+</code></pre>
+
+<pre><code>time used on  8 to  9: 1.230435s / 1000000 rounds
+time used on  9 to 10: 1.322079s / 1000000 rounds
+time used on 10 to 11: 1.496474s / 1000000 rounds
+time used on 11 to 12: 1.347279s / 1000000 rounds
+time used on 12 to 13: 0.822514s / 1000000 rounds
+time used on 13 to 14: 1.267359s / 1000000 rounds
+time used on 14 to 15: 1.265776s / 1000000 rounds
+time used on 15 to  0: 0.774339s / 1000000 rounds
+total time used in a round: 19.242893s / 1000000 rounds
+time used on  0 to  1: 0.906652s / 1000000 rounds
+time used on  1 to  2: 1.471215s / 1000000 rounds
+time used on  2 to  3: 0.869112s / 1000000 rounds
+time used on  3 to  4: 0.846962s / 1000000 rounds
+time used on  4 to  5: 0.879961s / 1000000 rounds
+time used on  5 to  6: 1.331113s / 1000000 rounds
+time used on  6 to  7: 1.247567s / 1000000 rounds
+time used on  7 to  8: 1.236116s / 1000000 rounds
+</code></pre>
+
+<h3 id="遇到的问题:abe259840b9d7da5db93f06163af60d6">遇到的问题</h3>
+
+<ol>
+<li><p>不清楚<code>MPI_Send()</code>与<code>MPI_recv()</code>函数中第二个参数<code>int count</code>的含义，以为是数据大小，就传入了<code>sizeof now</code>和<code>sizeof then</code>，造成了缓冲区溢出。后来查文档知道了<code>count</code>是数据的个数。</p></li>
+
+<li><p>不能保证一圈的总时间在各节点时间输出后输出。由于0号节点输出一圈总时间的时刻，其他进程可能还未输出该节点的时间。后来用<code>MPI_Barrier()</code>使进度同步，但并没有解决这个问题，可能与输出缓冲区有关，需要避免多进程输出。</p></li>
+</ol>
+
+
+  
+<div class="prev-next-post pure-g">
+  <div class="pure-u-1 pure-u-md-1-2">
+    
+    <nav class="prev">
+      <a href="https://constroy.github.io/post/C&#43;&#43;%E9%AB%98%E5%B1%82%E6%8A%BD%E8%B1%A1%E4%B9%8B%E8%99%9A%E5%87%BD%E6%95%B0/"><i class="fa fa-arrow-circle-left fa-fw fa-lg"></i>C&#43;&#43;高层抽象之虚函数</a>
+    </nav>
+    
+  </div>
+  <div class="pure-u-1 pure-u-md-1-2">
+    
+  </div>
+</div>
+
+
+
+  
+
+</div>
+
+</div>
+</div>
+<script src="https://constroy.github.io/js/ui.js"></script>
+
+
+
+
+</body>
+</html>
+

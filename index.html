@@ -195,6 +195,45 @@
   
     <article>
   <header>
+    <h2><a href="https://constroy.github.io/post/MPI%E7%82%B9%E5%88%B0%E7%82%B9%E9%80%9A%E4%BF%A1%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/">MPI点到点通信实验报告</a></h2>
+
+    <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>13 Apr 2016, 22:21</time>
+  </div>
+
+  
+
+  
+  
+  
+  
+
+  
+  
+  
+  
+
+</div>
+
+  </header>
+
+  <p>
+  实验要求 使用MPI的点对点通信，将数据从进程0传出，以环型方式（Ring），依次传输给所有的进程（最后传到进程0），也可以说，以接力的方式广播数据，计算数据传输一圈的时间。同时计算每个节点上传输一圈的时间。 设计方法 从0号进程开始，将当前时间作为数据传给下一个进程。每个进程收到上个进程发来的时间戳，用当前时间减之，得到这次传输的时间。再把当前发给下一个进程。直到0号进程收到N - 1号进程的数据，完成一圈。0号进程用当前减开始时间，得到一圈的总用时（包含每个进程自己占用的时间）。 重复R次，用总时间除以R，得出平均时间。R可由程序参数指定（通过mpirun传递参数）。 主要使用的函数： MPI_Comm_rank() // 获取本进程ID MPI_Comm_size() // 获取总进程数 MPI_Wtime() // 获取从某时刻开始经过的时间 MPI_Send() // 阻塞地发出数据 MPI_Recv() // 阻塞地接收数据 MPI_Barrier() // 阻塞直到每一个进程都到达这个函数调用 实现代码 #include &lt;stdlib.h&gt; #include &lt;stdio.h&gt; #include &lt;mpi.h&gt; int main(int argc, char *argv[]) { int i, round, myid, numprocs; double begin, now, then, total = .0, sum = .0; MPI_Status status; /* just one arg, the number of rounds is needed */ if (argc !=
+  </p>
+
+  
+  <footer>
+    <a href="https://constroy.github.io/post/MPI%E7%82%B9%E5%88%B0%E7%82%B9%E9%80%9A%E4%BF%A1%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
+  </footer>
+  
+</article>
+
+  
+    <article>
+  <header>
     <h2><a href="https://constroy.github.io/post/C&#43;&#43;%E9%AB%98%E5%B1%82%E6%8A%BD%E8%B1%A1%E4%B9%8B%E8%99%9A%E5%87%BD%E6%95%B0/">C&#43;&#43;高层抽象之虚函数</a></h2>
 
     <div class="post-meta">
