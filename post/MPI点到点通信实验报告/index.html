@@ -5,7 +5,7 @@
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="">
-  <meta name="generator" content="Hugo 0.15" />
+  <meta name="generator" content="Hugo 0.16" />
 
   <title>MPI点到点通信实验报告 &middot; See the Word Abstractly</title>
 
@@ -229,11 +229,11 @@
 
   
 
-<h3 id="实验要求:abe259840b9d7da5db93f06163af60d6">实验要求</h3>
+<h3 id="实验要求">实验要求</h3>
 
 <p>使用MPI的点对点通信，将数据从进程0传出，以环型方式（Ring），依次传输给所有的进程（最后传到进程0），也可以说，以接力的方式广播数据，计算数据传输一圈的时间。同时计算每个节点上传输一圈的时间。</p>
 
-<h3 id="设计方法:abe259840b9d7da5db93f06163af60d6">设计方法</h3>
+<h3 id="设计方法">设计方法</h3>
 
 <p>从0号进程开始，将当前时间作为数据传给下一个进程。每个进程收到上个进程发来的时间戳，用当前时间减之，得到这次传输的时间。再把当前发给下一个进程。直到0号进程收到N - 1号进程的数据，完成一圈。0号进程用当前减开始时间，得到一圈的总用时（包含每个进程自己占用的时间）。</p>
 
@@ -249,7 +249,7 @@ MPI_Recv()          // 阻塞地接收数据
 MPI_Barrier()       // 阻塞直到每一个进程都到达这个函数调用
 </code></pre>
 
-<h3 id="实现代码:abe259840b9d7da5db93f06163af60d6">实现代码</h3>
+<h3 id="实现代码">实现代码</h3>
 
 <pre><code class="language-cpp">#include &lt;stdlib.h&gt;
 #include &lt;stdio.h&gt;
@@ -321,7 +321,7 @@ int main(int argc, char *argv[]) {
 }
 </code></pre>
 
-<h3 id="运行结果:abe259840b9d7da5db93f06163af60d6">运行结果</h3>
+<h3 id="运行结果">运行结果</h3>
 
 <pre><code>$ cat ring.qsub.o105
 </code></pre>
@@ -345,7 +345,7 @@ time used on  6 to  7: 1.247567s / 1000000 rounds
 time used on  7 to  8: 1.236116s / 1000000 rounds
 </code></pre>
 
-<h3 id="遇到的问题:abe259840b9d7da5db93f06163af60d6">遇到的问题</h3>
+<h3 id="遇到的问题">遇到的问题</h3>
 
 <ol>
 <li><p>不清楚<code>MPI_Send()</code>与<code>MPI_recv()</code>函数中第二个参数<code>int count</code>的含义，以为是数据大小，就传入了<code>sizeof now</code>和<code>sizeof then</code>，造成了缓冲区溢出。后来查文档知道了<code>count</code>是数据的个数。</p></li>

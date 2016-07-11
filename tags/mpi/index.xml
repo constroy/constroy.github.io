@@ -17,11 +17,11 @@
       <guid>https://constroy.github.io/post/MPI%E7%82%B9%E5%88%B0%E7%82%B9%E9%80%9A%E4%BF%A1%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/</guid>
       <description>
 
-&lt;h3 id=&#34;实验要求:abe259840b9d7da5db93f06163af60d6&#34;&gt;实验要求&lt;/h3&gt;
+&lt;h3 id=&#34;实验要求&#34;&gt;实验要求&lt;/h3&gt;
 
 &lt;p&gt;使用MPI的点对点通信，将数据从进程0传出，以环型方式（Ring），依次传输给所有的进程（最后传到进程0），也可以说，以接力的方式广播数据，计算数据传输一圈的时间。同时计算每个节点上传输一圈的时间。&lt;/p&gt;
 
-&lt;h3 id=&#34;设计方法:abe259840b9d7da5db93f06163af60d6&#34;&gt;设计方法&lt;/h3&gt;
+&lt;h3 id=&#34;设计方法&#34;&gt;设计方法&lt;/h3&gt;
 
 &lt;p&gt;从0号进程开始，将当前时间作为数据传给下一个进程。每个进程收到上个进程发来的时间戳，用当前时间减之，得到这次传输的时间。再把当前发给下一个进程。直到0号进程收到N - 1号进程的数据，完成一圈。0号进程用当前减开始时间，得到一圈的总用时（包含每个进程自己占用的时间）。&lt;/p&gt;
 
@@ -37,7 +37,7 @@ MPI_Recv()          // 阻塞地接收数据
 MPI_Barrier()       // 阻塞直到每一个进程都到达这个函数调用
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h3 id=&#34;实现代码:abe259840b9d7da5db93f06163af60d6&#34;&gt;实现代码&lt;/h3&gt;
+&lt;h3 id=&#34;实现代码&#34;&gt;实现代码&lt;/h3&gt;
 
 &lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;#include &amp;lt;stdlib.h&amp;gt;
 #include &amp;lt;stdio.h&amp;gt;
@@ -109,7 +109,7 @@ int main(int argc, char *argv[]) {
 }
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h3 id=&#34;运行结果:abe259840b9d7da5db93f06163af60d6&#34;&gt;运行结果&lt;/h3&gt;
+&lt;h3 id=&#34;运行结果&#34;&gt;运行结果&lt;/h3&gt;
 
 &lt;pre&gt;&lt;code&gt;$ cat ring.qsub.o105
 &lt;/code&gt;&lt;/pre&gt;
@@ -133,7 +133,7 @@ time used on  6 to  7: 1.247567s / 1000000 rounds
 time used on  7 to  8: 1.236116s / 1000000 rounds
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h3 id=&#34;遇到的问题:abe259840b9d7da5db93f06163af60d6&#34;&gt;遇到的问题&lt;/h3&gt;
+&lt;h3 id=&#34;遇到的问题&#34;&gt;遇到的问题&lt;/h3&gt;
 
 &lt;ol&gt;
 &lt;li&gt;&lt;p&gt;不清楚&lt;code&gt;MPI_Send()&lt;/code&gt;与&lt;code&gt;MPI_recv()&lt;/code&gt;函数中第二个参数&lt;code&gt;int count&lt;/code&gt;的含义，以为是数据大小，就传入了&lt;code&gt;sizeof now&lt;/code&gt;和&lt;code&gt;sizeof then&lt;/code&gt;，造成了缓冲区溢出。后来查文档知道了&lt;code&gt;count&lt;/code&gt;是数据的个数。&lt;/p&gt;&lt;/li&gt;

@@ -5,7 +5,7 @@
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="virtual function in c plus plus">
-  <meta name="generator" content="Hugo 0.15" />
+  <meta name="generator" content="Hugo 0.16" />
 
   <title>C&#43;&#43;高层抽象之虚函数 &middot; See the Word Abstractly</title>
 
@@ -245,7 +245,7 @@
 
 <p>覆盖（overwrite）：在子类中定义中与父类中函数同名的函数，若不构成重写，则父类中的同名函数被隐藏。类似于命名空间的覆盖。</p>
 
-<h3 id="虚函数的声明:6df0902907ce0596fae51824fab0ea4d">虚函数的声明</h3>
+<h3 id="虚函数的声明">虚函数的声明</h3>
 
 <p>在成员函数的声明前加上 <code>virtual</code> 关键字就成了虚函数。在类外部的函数实现前不要加上 <code>virtual</code>。静态成员函数（static）不能被声明为虚函数。</p>
 
@@ -272,7 +272,7 @@
 <pre><code class="language-cpp">virtual void scan() override final;
 </code></pre>
 
-<h3 id="虚函数的使用:6df0902907ce0596fae51824fab0ea4d">虚函数的使用</h3>
+<h3 id="虚函数的使用">虚函数的使用</h3>
 
 <p>虚函数最通常都是用来实现运行时多态，比如</p>
 
@@ -293,7 +293,7 @@ int main() {
 
 <p>此时调用的是实际类B的fun()函数，而不是定义类A的fun()函数。</p>
 
-<h3 id="纯虚函数:6df0902907ce0596fae51824fab0ea4d">纯虚函数</h3>
+<h3 id="纯虚函数">纯虚函数</h3>
 
 <p>纯虚函数（pure virtual）是一种虚函数，它使得类变成抽象类（abstract class），抽象类不能被实例化。通过重载可以使纯虚函数变为普通虚函数，类变成普通类。也可以将纯虚函数继续重载为纯虚函数。</p>
 
@@ -335,7 +335,7 @@ int main()
 <p>A.cpp:(.text+0x2a): undefined reference to `A::fun()&rsquo;</p>
 </blockquote>
 
-<h3 id="虚析构函数与纯虚析构函数:6df0902907ce0596fae51824fab0ea4d">虚析构函数与纯虚析构函数</h3>
+<h3 id="虚析构函数与纯虚析构函数">虚析构函数与纯虚析构函数</h3>
 
 <p>如果类A的析构函数是虚函数，则所有类A的派生类的析构函数(包括默认析构函数)都是虚函数，且可以被重写，下面的代码将调用类B的析构函数。</p>
 
