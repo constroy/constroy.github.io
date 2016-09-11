@@ -7,7 +7,7 @@
   <meta name="description" content="">
   <meta name="generator" content="Hugo 0.16" />
 
-  <title>Posts &middot; See the Word Abstractly</title>
+  <title>Copy Ctor &middot; See the Word Abstractly</title>
 
   
   
@@ -187,34 +187,69 @@
 
 
 <div class="header">
-  <h1>Posts</h1>
+  <h1>Copy Ctor</h1>
 </div>
+
 <div class="content">
   
-  <h2>2016</h2>
-  <ul>
-  
-    <li><time>12 Sep 2016, 00:27</time> - <a href="https://constroy.github.io/post/C&#43;&#43;%E9%AB%98%E5%B1%82%E6%8A%BD%E8%B1%A1%E4%B9%8B%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0/">C&#43;&#43;高层抽象之构造函数</a></li>
+    <article>
+  <header>
+    <h2><a href="https://constroy.github.io/post/C&#43;&#43;%E9%AB%98%E5%B1%82%E6%8A%BD%E8%B1%A1%E4%B9%8B%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0/">C&#43;&#43;高层抽象之构造函数</a></h2>
+
+    <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>12 Sep 2016, 00:27</time>
+  </div>
 
   
-    <li><time>13 Apr 2016, 22:21</time> - <a href="https://constroy.github.io/post/MPI%E7%82%B9%E5%88%B0%E7%82%B9%E9%80%9A%E4%BF%A1%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/">MPI点到点通信实验报告</a></li>
 
   
-    <li><time>22 Mar 2016, 19:37</time> - <a href="https://constroy.github.io/post/C&#43;&#43;%E9%AB%98%E5%B1%82%E6%8A%BD%E8%B1%A1%E4%B9%8B%E8%99%9A%E5%87%BD%E6%95%B0/">C&#43;&#43;高层抽象之虚函数</a></li>
+  
+  
+  <div>
+    <i class="fa fa-folder fa-fw"></i>
+    
+      <a class="post-taxonomy-topic" href="https://constroy.github.io/topics/c-plus-plus">c plus plus</a>
+    
+  </div>
+  
+  
 
   
-  </ul>
   
-  <h2>2015</h2>
-  <ul>
   
-    <li><time>31 Dec 2015, 13:18</time> - <a href="https://constroy.github.io/post/x86-64%E4%B8%8D%E5%90%8C%E5%B9%B3%E5%8F%B0%E7%9A%84%E8%B0%83%E7%94%A8%E7%BA%A6%E5%AE%9A/">x86-64不同平台的调用约定</a></li>
+  <div>
+    <i class="fa fa-tags fa-fw"></i>
+    
+      <a class="post-taxonomy-tag" href="https://constroy.github.io/tags/cpp">cpp</a>&nbsp;&#47;
+    
+      <a class="post-taxonomy-tag" href="https://constroy.github.io/tags/constructor">constructor</a>&nbsp;&#47;
+    
+      <a class="post-taxonomy-tag" href="https://constroy.github.io/tags/copy-ctor">copy-ctor</a>&nbsp;&#47;
+    
+      <a class="post-taxonomy-tag" href="https://constroy.github.io/tags/move-ctor">move-ctor</a>
+    
+  </div>
+  
+  
+
+</div>
+
+  </header>
+
+  <p>
+  特殊函数 C++的类中有几类特殊函数，这些函数可以由编译器提供默认实现。它们是： Default constructor Copy constructor Move constructor Copy assignment operator Move assignment operator Destructor 这些函数是隐式声明的的 public 函数，当有ODR-use的时候，编译器会为它们生成定义。 当我们定义了自己的构造函数，赋值运算符或析构函数之后，默认函数就被禁用了。 如果我们想使用默认的函数，可以使用 = defualt 来定义它，也可以用 = delete 来删除它们。 这时编译器将认为它们是 user-declared 。 特殊构造函数 除了一般的不带参的构造函数外，还有拷贝构造函数和移动构造函数： class T { public: T() = default; T(T &amp;) = default; T(const T &amp;) = default; T(T &amp;&amp;) = default; T &amp;operator =(T &amp;) = default; T &amp;operator =(const T&amp;) = default; T &amp;operator =(T &amp;&amp;) = default; };
+  </p>
 
   
-    <li><time>19 Nov 2015, 10:57</time> - <a href="https://constroy.github.io/post/%E7%94%A8Hadoop%E8%BF%9B%E8%A1%8C%E5%88%86%E5%B8%83%E5%BC%8F%E8%AE%A1%E7%AE%97/">用Hadoop进行分布式计算</a></li>
-
+  <footer>
+    <a href="https://constroy.github.io/post/C&#43;&#43;%E9%AB%98%E5%B1%82%E6%8A%BD%E8%B1%A1%E4%B9%8B%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
+  </footer>
   
-  </ul>
+</article>
+
   
 </div>
 
@@ -227,4 +262,3 @@
 
 </body>
 </html>
-

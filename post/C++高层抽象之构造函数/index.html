@@ -7,7 +7,7 @@
   <meta name="description" content="">
   <meta name="generator" content="Hugo 0.16" />
 
-  <title>Cpp &middot; See the Word Abstractly</title>
+  <title>C&#43;&#43;高层抽象之构造函数 &middot; See the Word Abstractly</title>
 
   
   
@@ -187,16 +187,12 @@
 
 
 <div class="header">
-  <h1>Cpp</h1>
+  <h1>C&#43;&#43;高层抽象之构造函数</h1>
+  <h2></h2>
 </div>
-
 <div class="content">
-  
-    <article>
-  <header>
-    <h2><a href="https://constroy.github.io/post/C&#43;&#43;%E9%AB%98%E5%B1%82%E6%8A%BD%E8%B1%A1%E4%B9%8B%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0/">C&#43;&#43;高层抽象之构造函数</a></h2>
 
-    <div class="post-meta">
+  <div class="post-meta">
 
   <div>
     <i class="fa fa-calendar fa-fw"></i>
@@ -237,79 +233,119 @@
 
 </div>
 
-  </header>
+  
 
-  <p>
-  特殊函数 C++的类中有几类特殊函数，这些函数可以由编译器提供默认实现。它们是： Default constructor Copy constructor Move constructor Copy assignment operator Move assignment operator Destructor 这些函数是隐式声明的的 public 函数，当有ODR-use的时候，编译器会为它们生成定义。 当我们定义了自己的构造函数，赋值运算符或析构函数之后，默认函数就被禁用了。 如果我们想使用默认的函数，可以使用 = defualt 来定义它，也可以用 = delete 来删除它们。 这时编译器将认为它们是 user-declared 。 特殊构造函数 除了一般的不带参的构造函数外，还有拷贝构造函数和移动构造函数： class T { public: T() = default; T(T &amp;) = default; T(const T &amp;) = default; T(T &amp;&amp;) = default; T &amp;operator =(T &amp;) = default; T &amp;operator =(const T&amp;) = default; T &amp;operator =(T &amp;&amp;) = default; };
-  </p>
+<h3 id="特殊函数">特殊函数</h3>
+
+<p>C++的类中有几类特殊函数，这些函数可以由编译器提供默认实现。它们是：</p>
+
+<p><a href="http://en.cppreference.com/w/cpp/language/default_constructor">Default constructor</a><br />
+<a href="http://en.cppreference.com/w/cpp/language/copy_constructor">Copy constructor</a><br />
+<a href="http://en.cppreference.com/w/cpp/language/move_constructor">Move constructor</a><br />
+<a href="http://en.cppreference.com/w/cpp/language/copy_assignment">Copy assignment operator</a><br />
+<a href="http://en.cppreference.com/w/cpp/language/move_assignment">Move assignment operator</a><br />
+<a href="http://en.cppreference.com/w/cpp/language/destructor">Destructor</a></p>
+
+<p>这些函数是隐式声明的的 <code>public</code> 函数，当有ODR-use的时候，编译器会为它们生成定义。
+当我们定义了自己的构造函数，赋值运算符或析构函数之后，默认函数就被禁用了。
+如果我们想使用默认的函数，可以使用 <code>= defualt</code> 来定义它，也可以用 <code>= delete</code> 来删除它们。
+这时编译器将认为它们是 <code>user-declared</code> 。</p>
+
+<h3 id="特殊构造函数">特殊构造函数</h3>
+
+<p>除了一般的不带参的构造函数外，还有拷贝构造函数和移动构造函数：</p>
+
+<pre><code>class T {
+public:
+	T() = default;
+	T(T &amp;) = default;
+	T(const T &amp;) = default;
+	T(T &amp;&amp;) = default;
+	T &amp;operator =(T &amp;) = default;
+	T &amp;operator =(const T&amp;) = default;
+	T &amp;operator =(T &amp;&amp;) = default;
+};
+</code></pre>
+
+<p>注意默认的拷贝函数有两种，调用的时候会根据参数类型选择重载。而默认的移动构造函数则只有一种。
+<code>T(const T &amp;&amp;);</code> 是没有默认实现的，这是因为通常移动构造的语义是会修改实参。
+赋值运算符也一样，默认的移动赋值运算符是没有 <code>const</code> 版本的。</p>
+
+<h3 id="单例模式">单例模式</h3>
+
+<p>有时候我们需要禁用拷贝构造和移动构造，比如当某个类需要用到单例模式的时候。</p>
+
+<pre><code>class T {
+public:
+	static T &amp;get() {
+		static T t;
+		return t;
+	}
+	T(T &amp;) = delete;
+	T(T &amp;&amp;) = delete;
+private:
+	T() = default;
+};
+</code></pre>
+
+<p>注意，由于用户定义了拷贝构造函数，默认赋值运算符已经被删除了。</p>
+
+<h3 id="编译器优化">编译器优化</h3>
+
+<pre><code>class T {
+public:
+    T() = default;
+    T(T &amp;) {puts(&quot;non-const&quot;);}
+    T(const T &amp;) {puts(&quot;const&quot;);}
+};
+
+int main() {
+    const T c;
+    T a;
+    T x(c);
+    T y((const T)a);
+    T z((const T &amp;)a);
+    return 0;
+}
+
+/*
+ * output:
+ * const
+ * non-const
+ * const
+ */
+
+</code></pre>
+
+<p>为什么第2个拷贝构造没有调用带const修饰的拷贝构造函数呢？</p>
+
+<p>原来，输出non-const的调用并不是代码中显式的拷贝构造，而是一次类型转换。</p>
+
+<pre><code>(const T)a
+</code></pre>
+
+<p>这种类型转换实际上是通过拷贝构造函数实现的。
+而后面那次显示的拷贝构造被编译器优化elide掉了。</p>
+
 
   
-  <footer>
-    <a href="https://constroy.github.io/post/C&#43;&#43;%E9%AB%98%E5%B1%82%E6%8A%BD%E8%B1%A1%E4%B9%8B%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
-  </footer>
-  
-</article>
-
-  
-    <article>
-  <header>
-    <h2><a href="https://constroy.github.io/post/C&#43;&#43;%E9%AB%98%E5%B1%82%E6%8A%BD%E8%B1%A1%E4%B9%8B%E8%99%9A%E5%87%BD%E6%95%B0/">C&#43;&#43;高层抽象之虚函数</a></h2>
-
-    <div class="post-meta">
-
-  <div>
-    <i class="fa fa-calendar fa-fw"></i>
-    <time>22 Mar 2016, 19:37</time>
+<div class="prev-next-post pure-g">
+  <div class="pure-u-1 pure-u-md-1-2">
+    
+    <nav class="prev">
+      <a href="https://constroy.github.io/post/MPI%E7%82%B9%E5%88%B0%E7%82%B9%E9%80%9A%E4%BF%A1%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A/"><i class="fa fa-arrow-circle-left fa-fw fa-lg"></i>MPI点到点通信实验报告</a>
+    </nav>
+    
   </div>
-
-  
-
-  
-  
-  
-  <div>
-    <i class="fa fa-folder fa-fw"></i>
-    
-      <a class="post-taxonomy-topic" href="https://constroy.github.io/topics/c-plus-plus">c plus plus</a>
+  <div class="pure-u-1 pure-u-md-1-2">
     
   </div>
-  
-  
-
-  
-  
-  
-  <div>
-    <i class="fa fa-tags fa-fw"></i>
-    
-      <a class="post-taxonomy-tag" href="https://constroy.github.io/tags/cpp">cpp</a>&nbsp;&#47;
-    
-      <a class="post-taxonomy-tag" href="https://constroy.github.io/tags/polymorphism">polymorphism</a>&nbsp;&#47;
-    
-      <a class="post-taxonomy-tag" href="https://constroy.github.io/tags/virtual-function">virtual function</a>&nbsp;&#47;
-    
-      <a class="post-taxonomy-tag" href="https://constroy.github.io/tags/override">override</a>
-    
-  </div>
-  
-  
-
 </div>
 
-  </header>
 
-  <p>
-  C++中的多态（Polymorphism）有两种，编译时多态和运行时多态。编译时多态包括函数重载（overload）和模板（template）等，而运行时多态主要是虚函数的重写（override）。 首先区分几个概念： 重载（overload）： 相同作用范围（或命名空间）的同名函数的不同实现，只能通过参数列表来区分。 重写（override）： 在子类中重新实现父类中定义的虚函数，以支持动态绑定（dynamic binding）。 覆盖（overwrite）：在子类中定义中与父类中函数同名的函数，若不构成重写，则父类中的同名函数被隐藏。类似于命名空间的覆盖。 虚函数的声明 在成员函数的声明前加上 virtual 关键字就成了虚函数。在类外部的函数实现前不要加上 virtual。静态成员函数（static）不能被声明为虚函数。 virtual function_declaration ; 一旦类A的某个函数被声明为虚函数，所有类A的派生类都将包含这个虚函数，且可以对其进行重写。重写时，可以省去 virtual 关键字（笔者通常会明确写出 virtual ）。 一个特殊情况是构造函数，构造函数不能是虚函数。同时也不能在构造函数中调用虚函数，因为对象构造好之前它的调用表是不完整的，此时调用的函数是不确定的。 c++11引入了两个新关键字 override 和 final 。 override 明确声明一个函数是重写的，如果这个函数不能被重写，编译器将会报错。 virtual void scan() override; final 明确声明一个函数是不可被重写的，如果在派生类中对其进行重写，编译器将会报错。 virtual void scan() final; override 和 final 可以一起使用，没有先后顺序。 virtual void scan() override final; 虚函数的使用 虚函数最通常都是用来实现运行时多态，比如 class A { public: virtual void fun(); }; class B: public A { public: virtual void fun() override; }; int
-  </p>
 
   
-  <footer>
-    <a href="https://constroy.github.io/post/C&#43;&#43;%E9%AB%98%E5%B1%82%E6%8A%BD%E8%B1%A1%E4%B9%8B%E8%99%9A%E5%87%BD%E6%95%B0/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
-  </footer>
-  
-</article>
 
-  
 </div>
 
 </div>
@@ -321,3 +357,4 @@
 
 </body>
 </html>
+

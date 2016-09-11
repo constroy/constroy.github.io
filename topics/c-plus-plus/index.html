@@ -194,6 +194,65 @@
   
     <article>
   <header>
+    <h2><a href="https://constroy.github.io/post/C&#43;&#43;%E9%AB%98%E5%B1%82%E6%8A%BD%E8%B1%A1%E4%B9%8B%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0/">C&#43;&#43;高层抽象之构造函数</a></h2>
+
+    <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>12 Sep 2016, 00:27</time>
+  </div>
+
+  
+
+  
+  
+  
+  <div>
+    <i class="fa fa-folder fa-fw"></i>
+    
+      <a class="post-taxonomy-topic" href="https://constroy.github.io/topics/c-plus-plus">c plus plus</a>
+    
+  </div>
+  
+  
+
+  
+  
+  
+  <div>
+    <i class="fa fa-tags fa-fw"></i>
+    
+      <a class="post-taxonomy-tag" href="https://constroy.github.io/tags/cpp">cpp</a>&nbsp;&#47;
+    
+      <a class="post-taxonomy-tag" href="https://constroy.github.io/tags/constructor">constructor</a>&nbsp;&#47;
+    
+      <a class="post-taxonomy-tag" href="https://constroy.github.io/tags/copy-ctor">copy-ctor</a>&nbsp;&#47;
+    
+      <a class="post-taxonomy-tag" href="https://constroy.github.io/tags/move-ctor">move-ctor</a>
+    
+  </div>
+  
+  
+
+</div>
+
+  </header>
+
+  <p>
+  特殊函数 C++的类中有几类特殊函数，这些函数可以由编译器提供默认实现。它们是： Default constructor Copy constructor Move constructor Copy assignment operator Move assignment operator Destructor 这些函数是隐式声明的的 public 函数，当有ODR-use的时候，编译器会为它们生成定义。 当我们定义了自己的构造函数，赋值运算符或析构函数之后，默认函数就被禁用了。 如果我们想使用默认的函数，可以使用 = defualt 来定义它，也可以用 = delete 来删除它们。 这时编译器将认为它们是 user-declared 。 特殊构造函数 除了一般的不带参的构造函数外，还有拷贝构造函数和移动构造函数： class T { public: T() = default; T(T &amp;) = default; T(const T &amp;) = default; T(T &amp;&amp;) = default; T &amp;operator =(T &amp;) = default; T &amp;operator =(const T&amp;) = default; T &amp;operator =(T &amp;&amp;) = default; };
+  </p>
+
+  
+  <footer>
+    <a href="https://constroy.github.io/post/C&#43;&#43;%E9%AB%98%E5%B1%82%E6%8A%BD%E8%B1%A1%E4%B9%8B%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
+  </footer>
+  
+</article>
+
+  
+    <article>
+  <header>
     <h2><a href="https://constroy.github.io/post/C&#43;&#43;%E9%AB%98%E5%B1%82%E6%8A%BD%E8%B1%A1%E4%B9%8B%E8%99%9A%E5%87%BD%E6%95%B0/">C&#43;&#43;高层抽象之虚函数</a></h2>
 
     <div class="post-meta">

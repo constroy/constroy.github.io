@@ -6,8 +6,110 @@
     <description>Recent content in C Plus Plus on See the Word Abstractly</description>
     <generator>Hugo -- gohugo.io</generator>
     <copyright>&amp;copy; 2016. All rights reserved.</copyright>
-    <lastBuildDate>Tue, 22 Mar 2016 19:37:43 +0800</lastBuildDate>
+    <lastBuildDate>Mon, 12 Sep 2016 00:27:48 +0800</lastBuildDate>
     <atom:link href="https://constroy.github.io/topics/c-plus-plus/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>C&#43;&#43;高层抽象之构造函数</title>
+      <link>https://constroy.github.io/post/C&#43;&#43;%E9%AB%98%E5%B1%82%E6%8A%BD%E8%B1%A1%E4%B9%8B%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0/</link>
+      <pubDate>Mon, 12 Sep 2016 00:27:48 +0800</pubDate>
+      
+      <guid>https://constroy.github.io/post/C&#43;&#43;%E9%AB%98%E5%B1%82%E6%8A%BD%E8%B1%A1%E4%B9%8B%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0/</guid>
+      <description>
+
+&lt;h3 id=&#34;特殊函数&#34;&gt;特殊函数&lt;/h3&gt;
+
+&lt;p&gt;C++的类中有几类特殊函数，这些函数可以由编译器提供默认实现。它们是：&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://en.cppreference.com/w/cpp/language/default_constructor&#34;&gt;Default constructor&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&#34;http://en.cppreference.com/w/cpp/language/copy_constructor&#34;&gt;Copy constructor&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&#34;http://en.cppreference.com/w/cpp/language/move_constructor&#34;&gt;Move constructor&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&#34;http://en.cppreference.com/w/cpp/language/copy_assignment&#34;&gt;Copy assignment operator&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&#34;http://en.cppreference.com/w/cpp/language/move_assignment&#34;&gt;Move assignment operator&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&#34;http://en.cppreference.com/w/cpp/language/destructor&#34;&gt;Destructor&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;这些函数是隐式声明的的 &lt;code&gt;public&lt;/code&gt; 函数，当有ODR-use的时候，编译器会为它们生成定义。
+当我们定义了自己的构造函数，赋值运算符或析构函数之后，默认函数就被禁用了。
+如果我们想使用默认的函数，可以使用 &lt;code&gt;= defualt&lt;/code&gt; 来定义它，也可以用 &lt;code&gt;= delete&lt;/code&gt; 来删除它们。
+这时编译器将认为它们是 &lt;code&gt;user-declared&lt;/code&gt; 。&lt;/p&gt;
+
+&lt;h3 id=&#34;特殊构造函数&#34;&gt;特殊构造函数&lt;/h3&gt;
+
+&lt;p&gt;除了一般的不带参的构造函数外，还有拷贝构造函数和移动构造函数：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;class T {
+public:
+	T() = default;
+	T(T &amp;amp;) = default;
+	T(const T &amp;amp;) = default;
+	T(T &amp;amp;&amp;amp;) = default;
+	T &amp;amp;operator =(T &amp;amp;) = default;
+	T &amp;amp;operator =(const T&amp;amp;) = default;
+	T &amp;amp;operator =(T &amp;amp;&amp;amp;) = default;
+};
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;注意默认的拷贝函数有两种，调用的时候会根据参数类型选择重载。而默认的移动构造函数则只有一种。
+&lt;code&gt;T(const T &amp;amp;&amp;amp;);&lt;/code&gt; 是没有默认实现的，这是因为通常移动构造的语义是会修改实参。
+赋值运算符也一样，默认的移动赋值运算符是没有 &lt;code&gt;const&lt;/code&gt; 版本的。&lt;/p&gt;
+
+&lt;h3 id=&#34;单例模式&#34;&gt;单例模式&lt;/h3&gt;
+
+&lt;p&gt;有时候我们需要禁用拷贝构造和移动构造，比如当某个类需要用到单例模式的时候。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;class T {
+public:
+	static T &amp;amp;get() {
+		static T t;
+		return t;
+	}
+	T(T &amp;amp;) = delete;
+	T(T &amp;amp;&amp;amp;) = delete;
+private:
+	T() = default;
+};
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;注意，由于用户定义了拷贝构造函数，默认赋值运算符已经被删除了。&lt;/p&gt;
+
+&lt;h3 id=&#34;编译器优化&#34;&gt;编译器优化&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code&gt;class T {
+public:
+    T() = default;
+    T(T &amp;amp;) {puts(&amp;quot;non-const&amp;quot;);}
+    T(const T &amp;amp;) {puts(&amp;quot;const&amp;quot;);}
+};
+
+int main() {
+    const T c;
+    T a;
+    T x(c);
+    T y((const T)a);
+    T z((const T &amp;amp;)a);
+    return 0;
+}
+
+/*
+ * output:
+ * const
+ * non-const
+ * const
+ */
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;为什么第2个拷贝构造没有调用带const修饰的拷贝构造函数呢？&lt;/p&gt;
+
+&lt;p&gt;原来，输出non-const的调用并不是代码中显式的拷贝构造，而是一次类型转换。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;(const T)a
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;这种类型转换实际上是通过拷贝构造函数实现的。
+而后面那次显示的拷贝构造被编译器优化elide掉了。&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>C&#43;&#43;高层抽象之虚函数</title>
